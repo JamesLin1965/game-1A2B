@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1A2B-猜測數字小遊戲</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="fireworks-container"></div>
+    <div class="game-container">
+        <h1>1A2B-猜測數字小遊戲</h1>
+        <input type="text" id="guess-input" placeholder="請輸入不重複的四位數字">
+        <button id="submit-btn">提交</button>
+        <div id="result"></div>
+        <div id="history"></div>
+        <div id="guess-count">猜題次數：0</div>
+        <button id="restart-btn">重新開始</button>
+        <button id="show-answer-btn">顯示標準答案</button>
+        <div id="hidden-answer">答案：****</div>
+        <div id="author-info">作者：林士貴  版本：20250715_1</div>
+    </div>
+    <audio id="correct-sound" src="correct.mp3"></audio>
+    <script src="script.js"></script>
+</body>
+</html>
