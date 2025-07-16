@@ -27,13 +27,21 @@ body {
     left: 10px;
     font-size: 12px;
     color: transparent;
-    user-select: text;
+    user-select: all;  /* 允許整個文字被選取 */
     cursor: text;
+    background-color: transparent;
 }
 
+/* 當文字被選取時的樣式 */
 #hidden-answer::selection {
-    color: #333;
+    background-color: #ffeb3b;  /* 選取背景色 */
+    color: #333;  /* 選取時的文字顏色 */
+}
+
+/* 針對 Firefox 瀏覽器的選取樣式 */
+#hidden-answer::-moz-selection {
     background-color: #ffeb3b;
+    color: #333;
 }
 
 @keyframes dash-animation {
@@ -104,6 +112,13 @@ button {
     margin-top: 10px;
     font-size: 16px;
     color: #333;
+    font-weight: bold;
+}
+
+#elapsed-time {
+    margin-top: 10px;
+    font-size: 16px;
+    color: #2196F3;
     font-weight: bold;
 }
 

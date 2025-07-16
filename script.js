@@ -2,6 +2,8 @@ let hiddenNumber = [];
 let history = [];
 let guessCount = 0;
 const maxGuesses = 10; // 最大猜題次數
+let startTime = null; // 遊戲開始時間
+let timerInterval = null; // 計時器間隔
 
 function createFirework(x, y, color) {
     const firework = document.createElement('div');
@@ -42,6 +44,8 @@ function generateNumber() {
         const randomIndex = Math.floor(Math.random() * digits.length);
         hiddenNumber.push(digits.splice(randomIndex, 1)[0]);
     }
+    // 更新隱藏答案
+    document.getElementById('hidden-answer').textContent = `答案：${hiddenNumber.join('')}`;
 }
 
 function validateInput(input) {
@@ -67,6 +71,29 @@ function updateGuessCount() {
     document.getElementById('guess-count').textContent = `猜題次數：${guessCount}`;
 }
 
+function startTimer() {
+    if (!startTime) {
+        startTime = new Date();
+        const elapsedTimeElement = document.getElementById('elapsed-time');
+        elapsedTimeElement.style.display = 'block';
+        timerInterval = setInterval(() => {
+            const currentTime = new Date();
+            const elapsedSeconds = Math.floor((currentTime - startTime) / 1000);
+            elapsedTimeElement.textContent = `花費時間：${elapsedSeconds} 秒`;
+        }, 1000);
+    }
+}
+
+function stopTimer() {
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        const currentTime = new Date();
+        const elapsedSeconds = Math.floor((currentTime - startTime) / 1000);
+        const elapsedTimeElement = document.getElementById('elapsed-time');
+        elapsedTimeElement.textContent = `花費時間：${elapsedSeconds} 秒`;
+    }
+}
+
 function restartGame() {
     generateNumber();
     history = [];
@@ -78,7 +105,13 @@ function restartGame() {
     document.getElementById('guess-input').disabled = false;
     document.getElementById('submit-btn').disabled = false;
     document.getElementById('show-answer-btn').disabled = true; // 禁用顯示答案按鈕
-    document.getElementById('hidden-answer').textContent = `答案：${hiddenNumber.join('')}`; // 更新隱藏答案
+    document.getElementById('elapsed-time').style.display = 'none'; // 隱藏計時器
+    if (timerInterval) {
+        clearInterval(timerInterval);
+    }
+    startTime = null;
+    // 更新隱藏答案
+    document.getElementById('hidden-answer').textContent = `答案：${hiddenNumber.join('')}`;
 }
 
 function checkAnswer(userGuess) {
@@ -86,6 +119,7 @@ function checkAnswer(userGuess) {
     if (hint === '4A0B') {
         document.getElementById('correct-sound').play();
         showFireworks(); // 添加煙火效果
+        stopTimer(); // 停止計時
     }
     return hint;
 }
@@ -96,12 +130,16 @@ document.getElementById('submit-btn').addEventListener('click', () => {
         document.getElementById('result').textContent = '請輸入不重複的四位數字！';
         return;
     }
+    
+    // 開始計時（僅在第一次猜測時開始）
+    startTimer();
+    
     guessCount++;
     updateGuessCount();
     const hint = checkAnswer(input);
     history.push(`${input} - ${hint}`);
     document.getElementById('result').textContent = hint;
-    document.getElementById('history').textContent = history.join('<br>');
+    document.getElementById('history').textContent = history.join('\n');
     if (hint === '4A0B') {
         document.getElementById('result').textContent = '恭喜你猜中了！';
         document.getElementById('guess-input').disabled = true;
@@ -115,6 +153,7 @@ document.getElementById('submit-btn').addEventListener('click', () => {
         document.getElementById('guess-input').disabled = true;
         document.getElementById('submit-btn').disabled = true;
         document.getElementById('show-answer-btn').disabled = false; // 啟用顯示答案按鈕
+        stopTimer(); // 停止計時
         const gameOverSound = new Audio('game-over-sound.mp3');
         gameOverSound.play();
     }
